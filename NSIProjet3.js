@@ -137,9 +137,8 @@ var createImage = function (product) {
 window.onload = function() {
 	const research = document.getElementById("filter");
 	research.addEventListener("keyup", function() {
-		const getText = research.value;
-		if (getText.length != 0) {
-			var search = getText.toLowerCase();
+		const search = research.value;
+		if (search.length != 0) {
 			// document.getElementsByClassName("produit").style.display = 'none'; A FINIR CA MARCHE PAS
 			for (i in catalog) {
 				var product = catalog[i].name;
