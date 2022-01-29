@@ -139,22 +139,15 @@ window.onload = function() {
 	research.addEventListener("keyup", function() {
 		const search = research.value.toLowerCase();
 		console.log(search)
-		if (search.length != 0) {
-			for (i in catalog) {
-				var product = catalog[i].name.toLowerCase();
-				if (product.includes(search)) {
-					//console.log(product);
-					document.getElementById(i + "-product").style.display = 'inline-block';
-					
-				} else {
-					document.getElementById(i + "-product").style.display  = 'none';
-				}
-			};
-		} else {
-			//console.log("empty search");
-			for (i in catalog) {
+		for (i in catalog) {
+			var product = catalog[i].name.toLowerCase();
+			if (product.includes(search)) {
+				//console.log(product);
 				document.getElementById(i + "-product").style.display = 'inline-block';
-			};
+				
+			} else {
+				document.getElementById(i + "-product").style.display  = 'none';
+			}
 		};
 	});
 };
