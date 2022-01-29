@@ -137,17 +137,26 @@ var createImage = function (product) {
 window.onload = function() {
 	const research = document.getElementById("filter");
 	research.addEventListener("keyup", function() {
-		const search = research.value;
+		const search = research.value.toLowerCase();
+		console.log(search)
 		if (search.length != 0) {
-			// document.getElementsByClassName("produit").style.display = 'none'; A FINIR CA MARCHE PAS
 			for (i in catalog) {
-				var product = catalog[i].name;
+				var product = catalog[i].name.toLowerCase();
 				if (product.includes(search)) {
-					console.log(product)
-				};
+					//console.log(product);
+					document.getElementById(i + "-product").style.display = 'inline-block';
+					
+				} else {
+					document.getElementById(i + "-product").style.display  = 'none';
+				}
+			};
+		} else {
+			//console.log("empty search");
+			for (i in catalog) {
+				document.getElementById(i + "-product").style.display = 'inline-block';
 			};
 		};
-	});	
+	});
 };
 					
 				
