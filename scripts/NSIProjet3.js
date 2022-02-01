@@ -157,18 +157,51 @@ var addProduct = function(id) {
 	
 	// Get the product data
 
-	var productData = document.getElementById(id);
-	var desc = productData.getElementsByClassName("description").innerHTML;
-	var price = productData.getElementsByClassName("prix");
-	var quantity = productData.getElementsByTagName("input");
-	var figure = productData.getElementsByTagName("figure");
+	var product = catalog[parseInt(id[0])];
+	var orderId = id.replace("order", "qte");
+	var quantity = document.getElementById(orderId).value;	
+	var desc = product.description;
+	var price = product.price;
 
-	// send to the cart
+	// if the quantity of the product is not null
+	if (quantity != 0) {
+	
+		// send to the cart
+	
+		var divCart = document.getElementById("achats");
+		var sendToCart = divCart.appendChild(createBlock("div", ""));
+		sendToCart.className = "achat";
+		sendToCart.id = id.replace("order", "cart")
+	
+		// create the figure block
+	
+		var fig = sendToCart.appendChild(createFigureBlock());
+		fig.appendChild(createImage(product))
+	
+		// create the description
+	
+		sendToCart.appendChild(createBlock("h4", desc));
+	
+		// show the quantity
+	
+		var divQty = sendToCart.appendChild(createBlock("div", quantity));
+		divQty.className = "quantite";
+	
+		// show the price 
+	
+		var divPrice = sendToCart.appendChild(createBlock("div", price));
+		divPrice.className = "prix";
 
-	var sendToCart = document.createElement("div");
-	sendToCart.className(id.replace("order", "achat"));
-	sendToCart.appendChild(figure);
-	sendToCart.appendChild(createBlock("h4", desc));
-	sendToCart.appendChild(quantity);
-	sendToCart.appendChild(price)
+		// create the remove button
+
+		var divRemove = sendToCart.appendChild(createBlock("div", ""));
+		var remove = divRemove.appendChild(createBlock("button", ""))
+		remove.className = "retirer";
+		remove.id = id.replace("order", "remove");
+
+	} else {
+		alert("Vous ne pouvez pas commander un produit dans une quantité nulle");
+	}
+
+	
 }	
