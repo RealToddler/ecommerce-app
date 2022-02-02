@@ -159,10 +159,10 @@ var addProduct = function(id) {
 
 	var product = catalog[parseInt(id[0])];
 	var orderId = id.replace("order", "qte");
+	const divCart = document.getElementById("achats");
 	var quantity = document.getElementById(orderId).value;	
 	var desc = product.description;
 	var price = product.price;
-	var divCart = document.getElementById("achats");
 
 	// if the quantity of the product is not null
 	if (quantity != 0) {
@@ -191,28 +191,52 @@ var addProduct = function(id) {
 	
 		var divPrice = sendToCart.appendChild(createBlock("div", price));
 		divPrice.className = "prix";
+		var divRemove = sendToCart.appendChild(createBlock("div", ""));
+		divRemove.className = "controle";
 
 		// create the remove button
 
-		var divRemove = sendToCart.appendChild(createBlock("div", ""));
-		var remove = divRemove.appendChild(createBlock("button", ""))
+		var remove = document.createElement("button");
 		remove.className = "retirer";
 		remove.id = id.replace("order", "remove");
-
+		remove.onclick = removeItem(sendToCart.id, parseInt(price), parseInt(quantity));
+		divRemove.appendChild(remove);
+		
+		
 	} else {
 		alert("Vous ne pouvez pas commander un produit dans une quantité nulle");
 	};
+	
+	// create the remove button
+	
+	
 	totalPrice(parseInt(price), parseInt(quantity));
+
+	// manage the budget prompt, pas sur que ca fonctionne mais pour le moment il nous faut le bouton remove fonctionnel
+
+	/* var alertTotal  = null;
 	if (total>400) {
-		divCart.appendChild(createBlock("div", "Le budget est dépassé!"));
-	}
+		alertTotal = divCart.appendChild(createBlock("div", "Le budget est dépassé!"));
+		alertTotal.id = "alertTotal";
+	} else {
+		if (alertTotal == null) {
+			// pass
+		} else {
+			alertTotal.remove();
+			console.log(alertTotal);
+		};
+	}; */
 }	
 
 var totalPrice = function(price, quantity) {
 	// change the total price of the cart
 
 	total = total + parseInt(price)*parseInt(quantity);
-	console.log(total);
 	document.getElementById("montant").innerHTML = total.toString();
-	
+}
+
+var removeItem = function(id, price, quantity) {
+	document.getElementById(id);
+	console.log(id);
+	console.log("element enlevé");
 }
