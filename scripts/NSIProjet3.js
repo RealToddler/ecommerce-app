@@ -110,7 +110,10 @@ var createOrderControlBlock = function (index) {
 	var button = document.createElement("button");
 	button.className = 'commander';
 	button.id = index + "-" + orderIdKey;
-	button.onclick = function(){addProduct(this.id)};
+	button.onclick = function(){
+		addProduct(this.id);
+		cartValue();
+	};
 
 	// add button to control as its child
 	control.appendChild(button);
@@ -164,79 +167,60 @@ var addProduct = function(id) {
 	var desc = product.description;
 	var price = product.price;
 
-	// if the quantity of the product is not null
+	// if product quantity not null
 	if (quantity != 0) {
 	
 		// send to the cart
-	
 		var sendToCart = divCart.appendChild(createBlock("div", ""));
 		sendToCart.className = "achat";
 		sendToCart.id = id.replace("order", "cart")
 	
 		// create the figure block
-	
 		var fig = sendToCart.appendChild(createFigureBlock());
 		fig.appendChild(createImage(product))
 	
 		// create the description
-	
 		sendToCart.appendChild(createBlock("h4", desc));
 	
 		// show the quantity
-	
 		var divQty = sendToCart.appendChild(createBlock("div", quantity));
 		divQty.className = "quantite";
 	
 		// show the price 
-	
 		var divPrice = sendToCart.appendChild(createBlock("div", price));
 		divPrice.className = "prix";
+		
 		var divRemove = sendToCart.appendChild(createBlock("div", ""));
 		divRemove.className = "controle";
 
-		// create the remove button
 
-		var remove = document.createElement("button");
-		remove.className = "retirer";
-		remove.id = id.replace("order", "remove");
-		remove.onclick = removeItem(sendToCart.id, parseInt(price), parseInt(quantity));
-		divRemove.appendChild(remove);
+		// create the remove button
+		var removeButton = document.createElement("button");
+		removeButton.className = "retirer";
+		removeButton.id = id.replace("order", "remove");
+		removeButton.onclick = function(){
+			document.getElementById(sendToCart.id).remove();
+			cartValue(removeStatus=true);
+		};
+		divRemove.appendChild(removeButton);
 		
 		
 	} else {
 		alert("Vous ne pouvez pas commander un produit dans une quantité nulle");
 	};
-	
-	// create the remove button
-	
-	
-	totalPrice(parseInt(price), parseInt(quantity));
-
-	// manage the budget prompt, pas sur que ca fonctionne mais pour le moment il nous faut le bouton remove fonctionnel
-
-	/* var alertTotal  = null;
-	if (total>400) {
-		alertTotal = divCart.appendChild(createBlock("div", "Le budget est dépassé!"));
-		alertTotal.id = "alertTotal";
-	} else {
-		if (alertTotal == null) {
-			// pass
-		} else {
-			alertTotal.remove();
-			console.log(alertTotal);
-		};
-	}; */
 }	
 
-var totalPrice = function(price, quantity) {
-	// change the total price of the cart
-
-	total = total + parseInt(price)*parseInt(quantity);
-	document.getElementById("montant").innerHTML = total.toString();
-}
-
-var removeItem = function(id, price, quantity) {
-	document.getElementById(id);
-	console.log(id);
-	console.log("element enlevé");
+var cartValue = function(removeStatus=false){
+	var cart = document.getElementById("achats");
+	var orderValue = 0;
+	for (var i = 0; cart.length; i++) {
+		var order = cart[i]
+		qty = order.getElementByClassName("quantite");
+		price = order.getElementByClassName("prix");
+		if (removeStatus == true) {
+			orderValue = orderValue - parseInt(qty)*parseInt(price);
+		} else {
+			orderValue = orderValue + parseInt(qty)*parseInt(price);
+		};
+	};
 }
