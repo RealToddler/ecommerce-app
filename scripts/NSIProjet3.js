@@ -77,10 +77,10 @@ var createOrderControlBlock = function (index) {
 	input.addEventListener("input", function() {
 		input.value > 9 ? input.value = 9 : input.value;
 		input.value < 0 ? input.value = 0 : input.value;
-		input.value > 0 ? orderButton.style.opacity = 1 : orderButton.style.opacity = 0;
+		input.value > 0 ? orderButton.style.opacity = 1 : orderButton.style.opacity = 0.25;
 	});
 
-	orderButton.onmousedown = function(){
+	orderButton.onmousedown = function() {
 		if (input.value != 0) {
 			orderButton.style.opacity = 0.25;
 			addToCart(this.id);
@@ -128,7 +128,7 @@ window.onload = function() {
 // OK
 var cartStatement = function() {
 	const cart = document.getElementById("achats");
-	if (total > 400 && msgStatement == false){
+	if (total > 400 && msgStatement == false) {
 		var errorMsg = cart.appendChild(createBlock("div", "Budget dépassé"));
 		errorMsg.className = "Budget dépassé";
 		errorMsg.id = "exceeded-budget";
@@ -140,7 +140,7 @@ var cartStatement = function() {
 }
 
 // OK
-var cartValue = function(removeStatus=false, price, quantity){
+var cartValue = function(removeStatus=false, price, quantity) {
 	price = parseInt(price);
 	quantity = parseInt(quantity);
 	removeStatus == true ? total = total - quantity*price : total = total + quantity*price;
@@ -167,7 +167,7 @@ var sendProduct = function(divCart, id, cartId,  product, description, quantity,
 	var removeButton = document.createElement("button");
 	removeButton.className = "retirer";
 	removeButton.id = id.replace("order", "remove");
-	removeButton.onclick = function(){
+	removeButton.onclick = function() {
 		removeQuantity = document.getElementById(divQuantity.id).innerHTML;
 		document.getElementById(sendToCart.id).remove();
 		cartValue(removeStatus=true, price, removeQuantity);
