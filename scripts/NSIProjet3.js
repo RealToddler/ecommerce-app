@@ -100,6 +100,8 @@ var createOrderControlBlock = function (index) {
 	input.addEventListener("input", function() {
 		if (input.value > 9) {
 			input.value = 9;
+		} else if (input.value < 0) {
+			input.value = 0;
 		};
 	});
 
@@ -112,6 +114,7 @@ var createOrderControlBlock = function (index) {
 	button.id = index + "-" + orderIdKey;
 	button.onclick = function(){
 		addProduct(this.id);
+		document.getElementById(index + "-" + inputIdKey).value = 0;
 	};
 
 	// add button to control as its child
@@ -158,19 +161,17 @@ window.onload = function() {
 var addProduct = function(id) {
 	
 	// Get the product data
-
-	var product = id.split("-");
-	product = catalog[parseInt(product[0])];
-	var orderId = id.replace("order", "qte");
 	const divCart = document.getElementById("achats");
+	var product = id.split("-");
+	var product = catalog[parseInt(product[0])];
+	var orderId = id.replace("order", "qte");
 	var quantity = document.getElementById(orderId).value;	
 	var desc = product.description;
 	var price = product.price;
 	var testId = id.replace("order", "cart");
 
 	// if product quantity not null and the product is not already created
-	if (quantity != 0 && document.getElementById(testId) == null) {
-		
+	if (document.getElementById(testId) == null) {
 		// send to the cart
 		var sendToCart = divCart.appendChild(createBlock("div", ""));
 		sendToCart.className = "achat";
@@ -192,10 +193,8 @@ var addProduct = function(id) {
 		divPrice.className = "prix";
 		cartValue(removeStatus=false, price, quantity);
 
-		
 		var divRemove = sendToCart.appendChild(createBlock("div", ""));
 		divRemove.className = "controle";
-
 
 		// create the remove button
 		var removeButton = document.createElement("button");
@@ -206,11 +205,13 @@ var addProduct = function(id) {
 			cartValue(removeStatus=true, price, quantity);
 		};
 		divRemove.appendChild(removeButton);
-		
-		
 	} else {
-		alert("Vous ne pouvez pas commander un produit dans une quantité nulle ou un produit déjà commandé");
-	};
+		var product = document.getElementById(testId);
+		var qty = product.getElementsByClassName("quantite")[0];
+		qty.innerHTML = (parseInt(qty.innerHTML) + parseInt(quantity)).toString();
+		cartValue(removeStatus=false, price, quantity);
+		// console.log(parseInt(qty.innerHTML)); 
+	}
 }	
 
 var cartValue = function(removeStatus=false, price, qty){
@@ -225,12 +226,12 @@ var cartValue = function(removeStatus=false, price, qty){
 
 	var divTotal = document.getElementById("montant");
 	divTotal.innerHTML = total;
+	cartStatement()
 }
 
-
-var cartStatement = function(total) {
+var cartStatement = function() {
 	const cart = document.getElementById("achats");
-	if (total>400 && msgStatement == false){
+	if (total > 400 && msgStatement == false){
 		var errorMsg = cart.appendChild(createBlock("div", "Budget dépassé"));
 		errorMsg.className = "message d'erreur";
 		errorMsg.id = "error";
