@@ -112,7 +112,6 @@ var createOrderControlBlock = function (index) {
 	button.id = index + "-" + orderIdKey;
 	button.onclick = function(){
 		addProduct(this.id);
-		cartValue();
 	};
 
 	// add button to control as its child
@@ -189,6 +188,8 @@ var addProduct = function(id) {
 		// show the price 
 		var divPrice = sendToCart.appendChild(createBlock("div", price));
 		divPrice.className = "prix";
+		cartValue(removeStatus=false, sendToCart.id, price, quantity);
+
 		
 		var divRemove = sendToCart.appendChild(createBlock("div", ""));
 		divRemove.className = "controle";
@@ -198,9 +199,10 @@ var addProduct = function(id) {
 		var removeButton = document.createElement("button");
 		removeButton.className = "retirer";
 		removeButton.id = id.replace("order", "remove");
+		console.log(removeButton.id);
 		removeButton.onclick = function(){
 			document.getElementById(sendToCart.id).remove();
-			cartValue(removeStatus=true);
+			cartValue(removeStatus=true, removeButton.id, price, quantity);
 		};
 		divRemove.appendChild(removeButton);
 		
@@ -210,17 +212,20 @@ var addProduct = function(id) {
 	};
 }	
 
-var cartValue = function(removeStatus=false){
-	var cart = document.getElementById("achats");
-	var orderValue = 0;
-	for (var i = 0; cart.length; i++) {
-		var order = cart[i]
-		qty = order.getElementByClassName("quantite");
-		price = order.getElementByClassName("prix");
-		if (removeStatus == true) {
-			orderValue = orderValue - parseInt(qty)*parseInt(price);
-		} else {
-			orderValue = orderValue + parseInt(qty)*parseInt(price);
-		};
+var cartValue = function(removeStatus=false, id, price, qty){
+	console.log(id);
+	id = id[0];
+	price = parseInt(price);
+	qty = parseInt(qty);
+
+	if (removeStatus == true) {
+		total = total - qty*price;
+		console.log(total);
+	} else {
+		total = total + qty*price;
+		console.log(total);
 	};
+
+	var divTotal = document.getElementById("montant");
+	divTotal.innerHTML = total;
 }
