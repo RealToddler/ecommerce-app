@@ -165,14 +165,22 @@ var addProduct = function(id) {
 	var quantity = document.getElementById(orderId).value;	
 	var desc = product.description;
 	var price = product.price;
-
+	
 	// if product quantity not null
 	if (quantity != 0) {
-	
+		
 		// send to the cart
 		var sendToCart = divCart.appendChild(createBlock("div", ""));
 		sendToCart.className = "achat";
 		sendToCart.id = id.replace("order", "cart")
+		try {
+			var testId = document.getElementById(sendToCart.id);
+			if (testId == undefined) {
+				
+			} else {
+				
+			}
+		}
 	
 		// create the figure block
 		var fig = sendToCart.appendChild(createFigureBlock());
@@ -188,7 +196,7 @@ var addProduct = function(id) {
 		// show the price 
 		var divPrice = sendToCart.appendChild(createBlock("div", price));
 		divPrice.className = "prix";
-		cartValue(removeStatus=false, sendToCart.id, price, quantity);
+		cartValue(removeStatus=false, price, quantity);
 
 		
 		var divRemove = sendToCart.appendChild(createBlock("div", ""));
@@ -199,10 +207,9 @@ var addProduct = function(id) {
 		var removeButton = document.createElement("button");
 		removeButton.className = "retirer";
 		removeButton.id = id.replace("order", "remove");
-		console.log(removeButton.id);
 		removeButton.onclick = function(){
 			document.getElementById(sendToCart.id).remove();
-			cartValue(removeStatus=true, removeButton.id, price, quantity);
+			cartValue(removeStatus=true, price, quantity);
 		};
 		divRemove.appendChild(removeButton);
 		
@@ -212,18 +219,14 @@ var addProduct = function(id) {
 	};
 }	
 
-var cartValue = function(removeStatus=false, id, price, qty){
-	console.log(id);
-	id = id[0];
+var cartValue = function(removeStatus=false, price, qty){
 	price = parseInt(price);
 	qty = parseInt(qty);
 
 	if (removeStatus == true) {
 		total = total - qty*price;
-		console.log(total);
 	} else {
 		total = total + qty*price;
-		console.log(total);
 	};
 
 	var divTotal = document.getElementById("montant");
