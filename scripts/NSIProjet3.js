@@ -159,7 +159,9 @@ var addProduct = function(id) {
 	
 	// Get the product data
 
-	var product = catalog[parseInt(id[0])];
+	var product = id.split("-");
+	console.log(product[0]);
+	product = catalog[parseInt(product[0])];
 	var orderId = id.replace("order", "qte");
 	const divCart = document.getElementById("achats");
 	var quantity = document.getElementById(orderId).value;	
