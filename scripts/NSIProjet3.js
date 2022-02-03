@@ -1,4 +1,4 @@
-// YOUR NAME HERE
+// LIAM MAXIME EMILIEN
 
 // === constants ===
 const MAX_QTY = 9;
@@ -7,84 +7,51 @@ const orderIdKey = "order";
 const inputIdKey = "qte";
 
 // === global variables  ===
-// the total cost of selected products 
-var total = 0;
-var msgStatement = false;
+var total = 0; // total cost of selected products
+var msgStatement = false; // statement of exceeded budget message
 
 
 // function called when page is loaded, it performs initializations 
 var init = function () {
 	createShop();
-	
-	// TODO : add other initializations to achieve if you think it is required
 }
 window.addEventListener("load", init);
 
-
-
-// usefull functions
-
-/*
-* create and add all the div.produit elements to the div#boutique element
-* according to the product objects that exist in 'catalog' variable
-*/
+// OK
 var createShop = function () {
 	var shop = document.getElementById("boutique");
 	for(var i = 0; i < catalog.length; i++) {
 		shop.appendChild(createProduct(catalog[i], i));
-	}
+	};
 }
 
-/*
-* create the div.produit elment corresponding to the given product
-* The created element receives the id "index-product" where index is replaced by param's value
-* @param product (product object) = the product for which the element is created
-* @param index (int) = the index of the product in catalog, used to set the id of the created element
-*/
+// OK
 var createProduct = function (product, index) {
-	// build the div element for product
+	// creating product's container
 	var block = document.createElement("div");
 	block.className = "produit";
-	// set the id for this product
 	block.id = index + "-" + productIdKey;
-	// build the h4 part of 'block'
+
+	// appening product's data to product's container
 	block.appendChild(createBlock("h4", product.name));
-	
-	// /!\ should add the figure of the product... does not work yet... /!\ 
-	var fig = block.appendChild(createFigureBlock());
-	// TODO comment
-	fig.appendChild(createImage(product));
-	// build and add the div.description part of 'block' 
+	block.appendChild(createFigureBlock()).appendChild(createImage(product));
 	block.appendChild(createBlock("div", product.description, "description"));
-	// build and add the div.price part of 'block'
 	block.appendChild(createBlock("div", product.price, "prix"));
-	// build and add control div block to product element
 	block.appendChild(createOrderControlBlock(index));
 	return block;
 }
 
-
-/* return a new element of tag 'tag' with content 'content' and class 'cssClass'
- * @param tag (string) = the type of the created element (example : "p")
- * @param content (string) = the html wontent of the created element (example : "bla bla")
- * @param cssClass (string) (optional) = the value of the 'class' attribute for the created element
- */
+// OK
 var createBlock = function (tag, content, cssClass) {
 	var element = document.createElement(tag);
 	if (cssClass != undefined) {
 		element.className =  cssClass;
-	}
+	};
 	element.innerHTML = content;
 	return element;
 }
 
-/*
-* builds the control element (div.controle) for a product
-* @param index = the index of the considered product
-*
-* TODO : add the event handling, 
-*   /!\  in this version button and input do nothing  /!\  
-*/
+// OK
 var createOrderControlBlock = function (index) {
 	var control = document.createElement("div");
 	control.className = "controle";
@@ -100,155 +67,143 @@ var createOrderControlBlock = function (index) {
 	
 	// add input to control as its child
 	control.appendChild(input);
-	
-	// create order button
-	var button = document.createElement("button");
-	button.className = 'commander';
-	button.id = index + "-" + orderIdKey;
 
+	// create order button
+	var orderButton = document.createElement("button");
+	orderButton.className = 'commander';
+	orderButton.id = index + "-" + orderIdKey;
+
+	// setting input's conditions
 	input.addEventListener("input", function() {
-		if (input.value > 9) {
-			input.value = 9;
-		} else if (input.value < 0) {
-			input.value = 0;
-		};
-		if (input.value > 0) {
-			button.style.opacity = 1;
-		};
+		input.value > 9 ? input.value = 9 : input.value;
+		input.value < 0 ? input.value = 0 : input.value;
+		input.value > 0 ? orderButton.style.opacity = 1 : orderButton.style.opacity = 0;
 	});
-	button.onmousedown = function(){
+
+	orderButton.onmousedown = function(){
 		if (input.value != 0) {
-			button.style.opacity = 0.25;
-			addProduct(this.id);
-			document.getElementById(index + "-" + inputIdKey).value = 0;
+			orderButton.style.opacity = 0.25;
+			addToCart(this.id);
+			document.getElementById(index + "-" + inputIdKey).value = 0; // setting back input's value to 0
 		};
 	};
 
 	// add button to control as its child
-	control.appendChild(button);
+	control.appendChild(orderButton);
 	
 	// the built control div node is returned
 	return control;
 }
 
-
-/*
-* create and return the figure block for this product
-* see the static version of the project to know what the <figure> should be
-* @param product (product object) = the product for which the figure block is created
-*
-* TODO : write the correct code
-*/
+// OK
 var createFigureBlock = function () {
 	return createBlock("figure", "");
 }
 
+// OK
 var createImage = function (product) {
 	var img = createBlock("img", "");
 	img.setAttribute("src", product.image);
 	return img;
 }
 
+// OK
+var search = function(research) {
+	const search = research.value.toLowerCase();
+	for (item in catalog) {
+		var product = catalog[item].name.toLowerCase();
+		product.includes(search) ? document.getElementById(item + "-product").style.display = 'inline-block'
+		: document.getElementById(item + "-product").style.display = 'none';
+	};
+}
+
+// OK
 window.onload = function() {
 	const research = document.getElementById("filter");
 	research.addEventListener("keyup", function() {
-		const search = research.value.toLowerCase();
-		for (item in catalog) {
-			var product = catalog[item].name.toLowerCase();
-			if (product.includes(search)) {
-				document.getElementById(item + "-product").style.display = 'inline-block';
-			} else {
-				document.getElementById(item + "-product").style.display = 'none';
-			}
-		};
+		search(research);
 	});
-}	
-
-var addProduct = function(id) {
-	
-	// Get the product data
-	const divCart = document.getElementById("achats");
-	var product = id.split("-");
-	var product = catalog[parseInt(product[0])];
-	var orderId = id.replace("order", "qte");
-	var quantity = document.getElementById(orderId).value;	
-	var desc = product.description;
-	var price = product.price;
-	var testId = id.replace("order", "cart");
-
-	// if the product is not already created
-	if (document.getElementById(testId) == null) {
-		// send to the cart
-		var sendToCart = divCart.appendChild(createBlock("div", ""));
-		sendToCart.className = "achat";
-		sendToCart.id = id.replace("order", "cart")
-	
-		// create the figure block
-		var fig = sendToCart.appendChild(createFigureBlock());
-		fig.appendChild(createImage(product))
-	
-		// create the description
-		sendToCart.appendChild(createBlock("h4", desc));
-	
-		// show the quantity
-		var divQty = sendToCart.appendChild(createBlock("div", quantity));
-		divQty.className = "quantite";
-		divQty.id = testId.replace("cart", "quantity");
-	
-		// show the price 
-		var divPrice = sendToCart.appendChild(createBlock("div", price));
-		divPrice.className = "prix";
-		cartValue(removeStatus=false, price, quantity);
-
-		var divRemove = sendToCart.appendChild(createBlock("div", ""));
-		divRemove.className = "controle";
-
-		// create the remove button
-		var removeButton = document.createElement("button");
-		removeButton.className = "retirer";
-		removeButton.id = id.replace("order", "remove");
-		divRemove.appendChild(removeButton);
-		removeButton.onclick = function(){
-			removeQuantity = document.getElementById(divQty.id).innerHTML;
-			document.getElementById(sendToCart.id).remove();
-			cartValue(removeStatus=true, price, removeQuantity);
-	};
-} else {
-	var product = document.getElementById(testId);
-	var qty = product.getElementsByClassName("quantite")[0];
-	if ((parseInt(qty.innerHTML) + parseInt(quantity)) > 9) {
-		alert("La quantité maximum d'un produit est de 9.")
-	} else {
-		qty.innerHTML = (parseInt(qty.innerHTML) + parseInt(quantity)).toString();
-		cartValue(removeStatus=false, price, quantity);
-	}
-}
-}	
-
-var cartValue = function(removeStatus=false, price, qty){
-	price = parseInt(price);
-	qty = parseInt(qty);
-
-	if (removeStatus == true) {
-		total = total - qty*price;
-	} else {
-		total = total + qty*price;
-	};
-
-	var divTotal = document.getElementById("montant");
-	divTotal.innerHTML = total;
-	cartStatement()
 }
 
+// OK
 var cartStatement = function() {
 	const cart = document.getElementById("achats");
 	if (total > 400 && msgStatement == false){
 		var errorMsg = cart.appendChild(createBlock("div", "Budget dépassé"));
-		errorMsg.className = "message d'erreur";
-		errorMsg.id = "error";
+		errorMsg.className = "Budget dépassé";
+		errorMsg.id = "exceeded-budget";
 		msgStatement = true;
 	} else if (total <= 400 && msgStatement == true) {
-		document.getElementById("error").remove();
+		document.getElementById("exceeded-budget").remove();
 		msgStatement = false;
 	};	
+}
+
+// OK
+var cartValue = function(removeStatus=false, price, quantity){
+	price = parseInt(price);
+	quantity = parseInt(quantity);
+	removeStatus == true ? total = total - quantity*price : total = total + quantity*price;
+	var divTotal = document.getElementById("montant");
+	divTotal.innerHTML = total;
+	cartStatement();
+}
+
+// OK
+var sendProduct = function(divCart, id, cartId,  product, description, quantity, price) {
+	var sendToCart = divCart.appendChild(createBlock("div", ""));
+	sendToCart.className = "achat";
+	sendToCart.id = id.replace("order", "cart");
+	sendToCart.appendChild(createFigureBlock()).appendChild(createImage(product));
+	sendToCart.appendChild(createBlock("h4", description));
+	
+	var divQuantity = sendToCart.appendChild(createBlock("div", quantity));
+	divQuantity.className = "quantite";
+	divQuantity.id = cartId.replace("cart", "quantity");
+
+	var divPrice = sendToCart.appendChild(createBlock("div", price));
+	divPrice.className = "prix";
+
+	var removeButton = document.createElement("button");
+	removeButton.className = "retirer";
+	removeButton.id = id.replace("order", "remove");
+	removeButton.onclick = function(){
+		removeQuantity = document.getElementById(divQuantity.id).innerHTML;
+		document.getElementById(sendToCart.id).remove();
+		cartValue(removeStatus=true, price, removeQuantity);
+	};
+	
+	var divRemove = sendToCart.appendChild(createBlock("div", ""));
+	divRemove.className = "controle";
+	divRemove.appendChild(removeButton);
+
+	cartValue(removeStatus=false, price, quantity);
+}
+
+// OK
+var updateQuantity = function(cartId, price, quantity) {
+	var product = document.getElementById(cartId);
+	var freshQuantity = product.getElementsByClassName("quantite")[0];
+	if ((parseInt(freshQuantity.innerHTML) + parseInt(quantity)) > 9) {
+		alert("Vous ne pouvez commander que 9 fois le même produit.");
+	} else {
+		freshQuantity.innerHTML = (parseInt(freshQuantity.innerHTML) + parseInt(quantity)).toString();
+		cartValue(removeStatus=false, price, quantity);
+	};
+}
+
+var addToCart = function(id) {
+	const divCart = document.getElementById("achats");
+	var product = catalog[parseInt(id.split("-")[0])];
+	var orderId = id.replace("order", "qte");
+	var quantity = document.getElementById(orderId).value;	
+	var description = product.description;
+	var price = product.price;
+	var cartId = id.replace("order", "cart");
+	if (total > 400) {
+		alert("Le budget est dépassé.")
+	} else {
+		document.getElementById(cartId) == null ? sendProduct(divCart, id, cartId, product, description, quantity, price)
+		: updateQuantity(cartId, price, quantity);
+	};
 }
