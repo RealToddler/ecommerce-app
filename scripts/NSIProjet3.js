@@ -97,14 +97,7 @@ var createOrderControlBlock = function (index) {
 	input.value = "0";
 	input.min = "0";
 	input.max = MAX_QTY.toString();
-	input.addEventListener("input", function() {
-		if (input.value > 9) {
-			input.value = 9;
-		} else if (input.value < 0) {
-			input.value = 0;
-		};
-	});
-
+	
 	// add input to control as its child
 	control.appendChild(input);
 	
@@ -112,9 +105,23 @@ var createOrderControlBlock = function (index) {
 	var button = document.createElement("button");
 	button.className = 'commander';
 	button.id = index + "-" + orderIdKey;
-	button.onclick = function(){
-		addProduct(this.id);
-		document.getElementById(index + "-" + inputIdKey).value = 0;
+
+	input.addEventListener("input", function() {
+		if (input.value > 9) {
+			input.value = 9;
+		} else if (input.value < 0) {
+			input.value = 0;
+		};
+		if (input.value > 0) {
+			button.style.opacity = 1;
+		};
+	});
+	button.onmousedown = function(){
+		if (input.value != 0) {
+			button.style.opacity = 0.25;
+			addProduct(this.id);
+			document.getElementById(index + "-" + inputIdKey).value = 0;
+		};
 	};
 
 	// add button to control as its child
@@ -146,7 +153,6 @@ window.onload = function() {
 	const research = document.getElementById("filter");
 	research.addEventListener("keyup", function() {
 		const search = research.value.toLowerCase();
-		// console.log(search)
 		for (item in catalog) {
 			var product = catalog[item].name.toLowerCase();
 			if (product.includes(search)) {
@@ -170,7 +176,7 @@ var addProduct = function(id) {
 	var price = product.price;
 	var testId = id.replace("order", "cart");
 
-	// if product quantity not null and the product is not already created
+	// if the product is not already created
 	if (document.getElementById(testId) == null) {
 		// send to the cart
 		var sendToCart = divCart.appendChild(createBlock("div", ""));
@@ -187,6 +193,7 @@ var addProduct = function(id) {
 		// show the quantity
 		var divQty = sendToCart.appendChild(createBlock("div", quantity));
 		divQty.className = "quantite";
+		divQty.id = testId.replace("cart", "quantity");
 	
 		// show the price 
 		var divPrice = sendToCart.appendChild(createBlock("div", price));
@@ -200,18 +207,22 @@ var addProduct = function(id) {
 		var removeButton = document.createElement("button");
 		removeButton.className = "retirer";
 		removeButton.id = id.replace("order", "remove");
-		removeButton.onclick = function(){
-			document.getElementById(sendToCart.id).remove();
-			cartValue(removeStatus=true, price, quantity);
-		};
 		divRemove.appendChild(removeButton);
+		removeButton.onclick = function(){
+			removeQuantity = document.getElementById(divQty.id).innerHTML;
+			document.getElementById(sendToCart.id).remove();
+			cartValue(removeStatus=true, price, removeQuantity);
+	};
+} else {
+	var product = document.getElementById(testId);
+	var qty = product.getElementsByClassName("quantite")[0];
+	if ((parseInt(qty.innerHTML) + parseInt(quantity)) > 9) {
+		alert("La quantité maximum d'un produit est de 9.")
 	} else {
-		var product = document.getElementById(testId);
-		var qty = product.getElementsByClassName("quantite")[0];
 		qty.innerHTML = (parseInt(qty.innerHTML) + parseInt(quantity)).toString();
 		cartValue(removeStatus=false, price, quantity);
-		// console.log(parseInt(qty.innerHTML)); 
 	}
+}
 }	
 
 var cartValue = function(removeStatus=false, price, qty){
@@ -235,9 +246,9 @@ var cartStatement = function() {
 		var errorMsg = cart.appendChild(createBlock("div", "Budget dépassé"));
 		errorMsg.className = "message d'erreur";
 		errorMsg.id = "error";
-		msgStatement = true
+		msgStatement = true;
 	} else if (total <= 400 && msgStatement == true) {
 		document.getElementById("error").remove();
 		msgStatement = false;
-	}
+	};	
 }
