@@ -201,7 +201,7 @@ var addToCart = function(id) {
 	var price = product.price;
 	var cartId = id.replace("order", "cart");
 	if (total > 400) {
-		alert("Le budget est dépassé.")
+		alert("Le budget est dépassé.");
 	} else {
 		document.getElementById(cartId) == null ? sendProduct(divCart, id, cartId, product, description, quantity, price)
 		: updateQuantity(cartId, price, quantity);
