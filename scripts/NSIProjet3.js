@@ -10,7 +10,6 @@ const inputIdKey = "qte";
 var total = 0; // total cost of selected products
 var msgStatement = false; // statement of exceeded budget message
 
-
 // function called when page is loaded, it performs initializations 
 var init = function () {
 	createShop();
@@ -192,6 +191,7 @@ var updateQuantity = function(cartId, price, quantity) {
 	};
 }
 
+// OK
 var addToCart = function(id) {
 	const divCart = document.getElementById("achats");
 	var product = catalog[parseInt(id.split("-")[0])];
