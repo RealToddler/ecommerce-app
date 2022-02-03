@@ -9,7 +9,7 @@ const inputIdKey = "qte";
 // === global variables  ===
 // the total cost of selected products 
 var total = 0;
-
+var msgStatement = false;
 
 
 // function called when page is loaded, it performs initializations 
@@ -160,7 +160,6 @@ var addProduct = function(id) {
 	// Get the product data
 
 	var product = id.split("-");
-	console.log(product[0]);
 	product = catalog[parseInt(product[0])];
 	var orderId = id.replace("order", "qte");
 	const divCart = document.getElementById("achats");
@@ -168,7 +167,6 @@ var addProduct = function(id) {
 	var desc = product.description;
 	var price = product.price;
 	var testId = id.replace("order", "cart");
-	console.log(document.getElementById(testId));
 
 	// if product quantity not null and the product is not already created
 	if (quantity != 0 && document.getElementById(testId) == null) {
@@ -227,4 +225,18 @@ var cartValue = function(removeStatus=false, price, qty){
 
 	var divTotal = document.getElementById("montant");
 	divTotal.innerHTML = total;
+}
+
+
+var cartStatement = function(total) {
+	const cart = document.getElementById("achats");
+	if (total>400 && msgStatement == false){
+		var errorMsg = cart.appendChild(createBlock("div", "Budget dépassé"));
+		errorMsg.className = "message d'erreur";
+		errorMsg.id = "error";
+		msgStatement = true
+	} else if (total <= 400 && msgStatement == true) {
+		document.getElementById("error").remove();
+		msgStatement = false;
+	}
 }
