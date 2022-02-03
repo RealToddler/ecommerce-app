@@ -165,22 +165,16 @@ var addProduct = function(id) {
 	var quantity = document.getElementById(orderId).value;	
 	var desc = product.description;
 	var price = product.price;
-	
-	// if product quantity not null
-	if (quantity != 0) {
+	var testId = id.replace("order", "cart");
+	console.log(document.getElementById(testId));
+
+	// if product quantity not null and the product is not already created
+	if (quantity != 0 && document.getElementById(testId) == null) {
 		
 		// send to the cart
 		var sendToCart = divCart.appendChild(createBlock("div", ""));
 		sendToCart.className = "achat";
 		sendToCart.id = id.replace("order", "cart")
-		try {
-			var testId = document.getElementById(sendToCart.id);
-			if (testId == undefined) {
-				
-			} else {
-				
-			}
-		}
 	
 		// create the figure block
 		var fig = sendToCart.appendChild(createFigureBlock());
@@ -215,7 +209,7 @@ var addProduct = function(id) {
 		
 		
 	} else {
-		alert("Vous ne pouvez pas commander un produit dans une quantité nulle");
+		alert("Vous ne pouvez pas commander un produit dans une quantité nulle ou un produit déjà commandé");
 	};
 }	
 
