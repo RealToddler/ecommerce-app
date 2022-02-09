@@ -1,4 +1,4 @@
-// LIAM MAXIME EMILIEN
+// ROBERT Maxime DEFONTAINE JOLIVET Emilien DEBAST Liam
 
 // === constants ===
 const MAX_QTY = 9;
